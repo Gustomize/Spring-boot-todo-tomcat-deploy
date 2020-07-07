@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tarefas</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <header>
+        <div class="jumbotron" style="margin-top: 10px;">
+          <div class="container">
+            <h1 class="display-4">
+              <i class="fa fa-check-square-o" aria-hidden="true"></i>Tarefas
+            </h1>
+
+            <div class="container">
+              <form
+                th:action="@{/tarefas}"
+                th:object="${novaTarefa}"
+                method="post"
+              >
+                <div class="form-row">
+                  <div class="form-group col-md-11">
+                    <input type="hidden" th:field="*{id}" />
+
+                    <input
+                      th:field="*{tarefa}"
+                      type="text"
+                      class="form-control"
+                      id="input-tarefa"
+                      placeholder="Digite uma nova tarefa..."
+                      required
+                    />
+
+                    <input type="hidden" th:field="*{status}" />
+                  </div>
+
+                  <div class="form-group col-md-1">
+                    <button
+                      class="btn btn-primary"
+                      type="submit"
+                      id="nova-tarefa"
+                    >
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-auto">
+              <table class="table table-responsive table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">Tarefa</th>
+                    <th scope="col">Opções</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="tarefa: ${tarefas}">
+                    <td
+                      th:text="${tarefa.tarefa}"
+                      th:style="${tarefa.status == true ? 'text-decoration: line-through' : 'text-decoration: none' }"
+                    ></td>
+
+                    <td>
+                      <div
+                        class="btn-group"
+                        role="group"
+                        aria-label="Basic example"
+                      >
+                        <a
+                          th:if="${tarefa.status == false}"
+                          class="btn btn-success"
+                          th:href="@{/tarefas/{id}/concluir(id=${tarefa.id})}"
+                        >
+                          <i class="fa fa-check" aria-hidden="true"></i>
+                        </a>
+                        <a
+                          th:unless="${tarefa.status == false}"
+                          class="btn btn-warning"
+                          th:href="@{/tarefas/{id}/refazer(id=${tarefa.id})}"
+                        >
+                          <i class="fa fa-undo" aria-hidden="true"></i>
+                        </a>
+                        <a
+                          class="btn btn-danger"
+                          th:href="@{/tarefas/{id}(id=${tarefa.id})}"
+                        >
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script type="text/javascript">
+      var input = document.getElementById("input-tarefa");
+
+      input.addEventListener("keyup", function (event) {
+        if (event.keyCode === 13) {
+          event.preventDefault();
+        }
+      });
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  </body>
+</html>
