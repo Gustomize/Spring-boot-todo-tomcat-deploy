@@ -13,42 +13,39 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TarefaService {
-	
-	private final TarefaRepository tarefaRepository;
 
-	public List<Tarefa> listarTarefas() {
-		return tarefaRepository.findAll();
-	}
+    private final TarefaRepository tarefaRepository;
+    private static final String TAREFA_NAO_ENCONTRADA = "Tarefa não encontrada";
 
-	public Tarefa criarTarefa(Tarefa tarefa) {
-		tarefa.setStatus(false);
+    public List<Tarefa> listarTarefas() {
+        return tarefaRepository.findAll();
+    }
 
-		return tarefaRepository.save(tarefa);
-	}
+    public void criarTarefa(Tarefa tarefa) {
+        tarefa.setStatus(false);
+        tarefaRepository.save(tarefa);
+    }
 
-	public Tarefa concluirTarefa(long id) {
-		Tarefa tarefa = tarefaRepository.findById(id) //
-				.orElseThrow(() -> new TarefaNaoEncontradaException("Tarefa não encontrada"));
+    public void concluirTarefa(long id) {
+        Tarefa tarefa = getTarefa(id);
+        tarefa.setStatus(true);
+        tarefaRepository.save(tarefa);
+    }
 
-		tarefa.setStatus(true);
+    public void refazerTarefa(long id) {
+        Tarefa tarefa = getTarefa(id);
+        tarefa.setStatus(false);
+        tarefaRepository.save(tarefa);
+    }
 
-		return tarefaRepository.save(tarefa);
-	}
+    public void removerTarefa(long id) {
+        Tarefa tarefa = getTarefa(id);
+        tarefaRepository.deleteById(tarefa.getId());
+    }
 
-	public Tarefa refazerTarefa(long id) {
-		Tarefa tarefa = tarefaRepository.findById(id) //
-				.orElseThrow(() -> new TarefaNaoEncontradaException("Tarefa não encontrada"));
-
-		tarefa.setStatus(false);
-
-		return tarefaRepository.save(tarefa);
-	}
-
-	public void removerTarefa(long id) {
-		Tarefa tarefa = tarefaRepository.findById(id) //
-				.orElseThrow(() -> new TarefaNaoEncontradaException("Tarefa não encontrada"));
-
-		tarefaRepository.deleteById(tarefa.getId());
-	}
+    private Tarefa getTarefa(long id) {
+        return tarefaRepository.findById(id)
+                .orElseThrow(() -> new TarefaNaoEncontradaException(TAREFA_NAO_ENCONTRADA));
+    }
 
 }

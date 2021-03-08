@@ -1,5 +1,6 @@
 package com.gusto.tarefas.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,45 +16,47 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/tarefas")
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TarefaController {
 
-	private final TarefaService tarefaService;
+    private static final String REDIRECT_TO_HOMEPAGE = "redirect:/tarefas";
 
-	@GetMapping
-	public String index(Model model, @ModelAttribute("novaTarefa") Tarefa tarefa) {
-		model.addAttribute("tarefas", tarefaService.listarTarefas());
-		model.addAttribute("novaTarefa", new Tarefa());
+    private final TarefaService tarefaService;
 
-		return "index";
-	}
+    @GetMapping
+    public String index(Model model, @ModelAttribute("novaTarefa") Tarefa tarefa) {
+        model.addAttribute("tarefas", tarefaService.listarTarefas());
+        model.addAttribute("novaTarefa", new Tarefa());
 
-	@PostMapping
-	public String criar(@ModelAttribute("tarefa") Tarefa tarefa) {
-		tarefaService.criarTarefa(tarefa);
+        return "index";
+    }
 
-		return "redirect:/tarefas";
-	}
+    @PostMapping
+    public String criar(@ModelAttribute("tarefa") Tarefa tarefa) {
+        tarefaService.criarTarefa(tarefa);
 
-	@GetMapping("/{id}/concluir")
-	public String concluir(@PathVariable long id) {
-		tarefaService.concluirTarefa(id);
+        return REDIRECT_TO_HOMEPAGE;
+    }
 
-		return "redirect:/tarefas";
-	}
+    @GetMapping("/{id}/concluir")
+    public String concluir(@PathVariable long id) {
+        tarefaService.concluirTarefa(id);
 
-	@GetMapping("/{id}/refazer")
-	public String refazer(@PathVariable long id) {
-		tarefaService.refazerTarefa(id);
+        return REDIRECT_TO_HOMEPAGE;
+    }
 
-		return "redirect:/tarefas";
-	}
+    @GetMapping("/{id}/refazer")
+    public String refazer(@PathVariable long id) {
+        tarefaService.refazerTarefa(id);
 
-	@GetMapping("/{id}")
-	public String remover(@PathVariable long id) {
-		tarefaService.removerTarefa(id);
+        return REDIRECT_TO_HOMEPAGE;
+    }
 
-		return "redirect:/tarefas";
-	}
+    @GetMapping("/{id}")
+    public String remover(@PathVariable long id) {
+        tarefaService.removerTarefa(id);
+
+        return REDIRECT_TO_HOMEPAGE;
+    }
 
 }

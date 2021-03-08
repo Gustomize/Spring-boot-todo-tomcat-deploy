@@ -23,7 +23,7 @@ public class Tarefa {
 	
 	@NotBlank(message = "Por favor inserir uma descrição da tarefa")
 	@Size(max = 255)
-	private String tarefa;
+	private String descricao;
 	
 	private boolean status;
 
